@@ -245,6 +245,13 @@ const Portfolio = () => {
     }
   }, [isVisible.about, hasAnimated.stats]);
 
+  // Trigger skill bar animations when skills section is visible
+  useEffect(() => {
+    if (isVisible.skills && !hasAnimated.skills) {
+      setHasAnimated((prev) => ({ ...prev, skills: true }));
+    }
+  }, [isVisible.skills, hasAnimated.skills]);
+
   // Intersection Observer for scroll animations
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
@@ -861,10 +868,10 @@ const Portfolio = () => {
                         <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                           <div
                             className={`h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full ${
-                              isVisible.skills ? "skill-bar-fill" : "w-0"
+                              hasAnimated.skills ? "skill-bar-fill" : "w-0"
                             }`}
                             style={{
-                              width: isVisible.skills
+                              width: hasAnimated.skills
                                 ? `${90 - idx * 5}%`
                                 : "0%",
                               animationDelay: `${idx * 0.1}s`,
@@ -1229,9 +1236,8 @@ const Portfolio = () => {
               Assistant Supervisor | Pharmaceutical Excellence | Team Leadership
             </p>
             <p className="text-slate-500 text-sm font-body">
-              © {new Date().getFullYear()} Ahtisham Lodhi. All rights reserved.
+              © 2025 Ahtisham Lodhi. All rights reserved.
             </p>
-
             <p className="text-slate-600 text-xs font-body mt-2">
               Crafted with passion in Hyderabad, Pakistan
             </p>
