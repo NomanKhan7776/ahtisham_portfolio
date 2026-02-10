@@ -24,6 +24,16 @@ const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
+  const [counters, setCounters] = useState({
+    years: 0,
+    companies: 0,
+    team: 0,
+    success: 0,
+  });
+  const [hasAnimated, setHasAnimated] = useState({
+    stats: false,
+    skills: false,
+  });
   const observerRef = useRef(null);
 
   // Gallery images with placeholders - Replace with your own images
@@ -203,6 +213,37 @@ const Portfolio = () => {
       icon: "📚",
     },
   ];
+
+  // Counter animation function
+  const animateCounter = (target, key) => {
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        setCounters((prev) => ({ ...prev, [key]: target }));
+        clearInterval(timer);
+      } else {
+        setCounters((prev) => ({ ...prev, [key]: Math.floor(current) }));
+      }
+    }, duration / steps);
+  };
+
+  // Trigger counter animations when about section is visible
+  useEffect(() => {
+    if (isVisible.about && !hasAnimated.stats) {
+      setHasAnimated((prev) => ({ ...prev, stats: true }));
+      setTimeout(() => {
+        animateCounter(7, "years");
+        animateCounter(3, "companies");
+        animateCounter(15, "team");
+        animateCounter(98, "success");
+      }, 300);
+    }
+  }, [isVisible.about, hasAnimated.stats]);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -404,6 +445,16 @@ const Portfolio = () => {
             transform: translateX(0);
           }
         }
+
+        @keyframes fillBar {
+          from {
+            width: 0%;
+          }
+        }
+
+        .skill-bar-fill {
+          animation: fillBar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
       `}</style>
 
       {/* Navigation */}
@@ -411,7 +462,11 @@ const Portfolio = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="text-2xl font-display font-bold gradient-text">
-              {/* <img src="/AL.png" alt="" /> */}
+              <img
+                src="/AL.png"
+                alt="AL Logo"
+                className="h-12 w-auto object-contain"
+              />
             </div>
 
             {/* Desktop Menu */}
@@ -587,19 +642,27 @@ const Portfolio = () => {
 
               <div className="grid grid-cols-2 gap-6 pt-6">
                 <div className="glass-effect p-6 rounded-2xl card-hover">
-                  <div className="text-4xl font-bold gradient-text">7+</div>
+                  <div className="text-4xl font-bold gradient-text">
+                    {counters.years}+
+                  </div>
                   <div className="text-slate-400 mt-2">Years Experience</div>
                 </div>
                 <div className="glass-effect p-6 rounded-2xl card-hover">
-                  <div className="text-4xl font-bold gradient-text">3</div>
+                  <div className="text-4xl font-bold gradient-text">
+                    {counters.companies}
+                  </div>
                   <div className="text-slate-400 mt-2">Major Companies</div>
                 </div>
                 <div className="glass-effect p-6 rounded-2xl card-hover">
-                  <div className="text-4xl font-bold gradient-text">15+</div>
+                  <div className="text-4xl font-bold gradient-text">
+                    {counters.team}+
+                  </div>
                   <div className="text-slate-400 mt-2">Team Members Led</div>
                 </div>
                 <div className="glass-effect p-6 rounded-2xl card-hover">
-                  <div className="text-4xl font-bold gradient-text">98%</div>
+                  <div className="text-4xl font-bold gradient-text">
+                    {counters.success}%
+                  </div>
                   <div className="text-slate-400 mt-2">Success Rate</div>
                 </div>
               </div>
@@ -797,12 +860,14 @@ const Portfolio = () => {
                         </div>
                         <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-1000 ease-out"
+                            className={`h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full ${
+                              isVisible.skills ? "skill-bar-fill" : "w-0"
+                            }`}
                             style={{
-                              width: `${90 - idx * 5}%`,
-                              animation: isVisible.skills
-                                ? "slideEnter 1s ease-out"
-                                : "none",
+                              width: isVisible.skills
+                                ? `${90 - idx * 5}%`
+                                : "0%",
+                              animationDelay: `${idx * 0.1}s`,
                             }}
                           ></div>
                         </div>
@@ -846,15 +911,15 @@ const Portfolio = () => {
                         : "opacity-0 scale-105 pointer-events-none"
                     }`}
                   >
-                    <div className="relative w-full h-full">
+                    <div className="relative w-full h-full flex items-center justify-center bg-slate-900">
                       <img
                         src={item.image}
                         alt={item.caption}
-                        className="w-full h-full object-cover object-center"
+                        className="max-w-full max-h-full object-contain"
                       />
                       {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/60"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/60 pointer-events-none"></div>
 
                       {/* Image Info */}
                       <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16">
