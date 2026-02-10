@@ -1236,8 +1236,9 @@ const Portfolio = () => {
               Assistant Supervisor | Pharmaceutical Excellence | Team Leadership
             </p>
             <p className="text-slate-500 text-sm font-body">
-              © 2025 Ahtisham Lodhi. All rights reserved.
+              © {new Date().getFullYear()} Ahtisham Lodhi. All rights reserved.
             </p>
+
             <p className="text-slate-600 text-xs font-body mt-2">
               Crafted with passion in Hyderabad, Pakistan
             </p>
